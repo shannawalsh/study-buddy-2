@@ -77,7 +77,21 @@ while True:
     if user_input.lower() == "exit":
         print("Goodbye!")
         exit()
-
+        
+    moderation_result = client.moderations.create(
+        input = user_input
+    )
+    #print(moderation_result.results[0].category_scores)
+    #print(moderation_result.results[0].flagged)
+    #exit()
+    while moderation_result.results[0].flagged == True:
+        print("Assistant: Sorry, your message violated our community guidelines. Please try a different prompt.")
+        
+        user_input = input("You: ")
+        moderation_result = client.moderations.create(
+            input = user_input
+        )
+    
     message = client.beta.threads.messages.create(
         thread_id = thread.id,
         role = "user",
